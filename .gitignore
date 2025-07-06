@@ -1,0 +1,64 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# Django migrations
+**/migrations/
+!**/migrations/__init__.py
+
+# Media and static files
+/media
+/staticfiles
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# PyCharm
+.idea/
+
+# Test coverage
+htmlcov/
+.coverage
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# pipenv
+Pipfile.lock
+
+# dotenv
+.env
+.env.*
+
+# Other
+*.swp
+*.swo

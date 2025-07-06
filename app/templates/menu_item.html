@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<section>
+  <article>
+    <h1>Menu</h1>
+    <!--Begin row-->
+    <div class="row">
+      <h2>{{ menu_item.name }}</h2>
+      <img src="{{ menu_item.picture.url }}" />
+      <p>{{ menu_item.description }}</p>
+      <p>Price: ${{ menu_item.price }}</p>
+      <p>Available: {{ menu_item.available|yesno:"Yes,No" }}</p>
+    </div>
+    <!--End row-->
+  </article>
+
+
+{% endblock %}

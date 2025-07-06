@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khawa Dawah | Your ultimate taste destination</title>
+    <meta name="description" content="A food destination beyond your expectation" />
+    <link
+      rel="preload"
+      href="{% static 'css/styles.css' %}"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="{% static 'css/styles.css' %}"></noscript>
+</head>
+<body>
+    {% include 'partials/_header.html' %}
+
+    <main>
+        {% block content %}
+
+        {% endblock %}
+    </main>
+</body>
+</html>

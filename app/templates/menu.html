@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>Menu</h1>
+<p>Our menu consists of 12-15 seasonal items based on Italian, Greek, and Turkish culture.</p>
+<ul class="menu-list">
+    {% for item in menu_items %}
+    <li class="menu-item">
+        <a href="{% url 'menu_item' item_id=item.id %}">{{ item.name}}</a>
+        <p>Id: ${{ item.id }}</p>
+        <p>Price: ${{ item.price }}</p>
+        <p>Available: {{ item.available|yesno:"Yes,No" }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
