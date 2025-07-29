@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <!-- 1.  Toast CSS (tiny, inline) -->
+    <style>
+        #toast{
+            position:fixed; top:20px; right:20px;
+            background:#28a745; color:#fff; padding:10px 14px;
+            border-radius:4px; z-index:9999; display:none;
+            font-size:14px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+        }
+    </style>
+
+    <!-- 2.  WebSocket + toast script -->
+    <script>
+        const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
+        const audio = new Audio("{% static 'upbeat.mp3' %}");
+        const toast = document.createElement('div');
+        toast.id = 'toast';
+        document.body.appendChild(toast);
+
+        ws.onmessage = e => {
+            const msg = JSON.parse(e.data);
+            toast.textContent = `New ${msg.table.replace('booking_','')} booking`;
+            toast.style.display = 'block';
+            audio.play();
+            setTimeout(() => toast.style.display = 'none', 4000);
+        };
+    </script>
+{% endblock %}

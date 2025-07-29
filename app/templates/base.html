@@ -6,13 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khawa Dawah | Your ultimate taste destination</title>
     <meta name="description" content="A food destination beyond your expectation" />
-    <link
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    {% comment %} <link
       rel="preload"
       href="{% static 'css/styles.css' %}"
       as="style"
       onload="this.rel = 'stylesheet'"
     />
+     <link
+      rel="preload"
+      href="css/styles.css"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+    /> {% endcomment %}
     <noscript><link rel="stylesheet" href="{% static 'css/styles.css' %}"></noscript>
+
+    {% comment %} <script>
+        const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
+        ws.onmessage = e => {
+            const msg = JSON.parse(e.data);
+            console.log(`Booking event table ${msg.table}:`, msg.data);
+            new Audio("{% static 'upbeat.mp3' %}").play();
+        };
+    </script> {% endcomment %}
 </head>
 <body>
     {% include 'partials/_header.html' %}
