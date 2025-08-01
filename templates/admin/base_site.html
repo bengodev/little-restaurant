@@ -14,20 +14,32 @@
         }
     </style>
 
-    <!-- 2.  WebSocket + toast script -->
-    <script>
-        const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
-        const audio = new Audio("{% static 'upbeat.mp3' %}");
-        const toast = document.createElement('div');
-        toast.id = 'toast';
-        document.body.appendChild(toast);
+    <!-- 2.  WebSocket script -->
+  
+{% if user.is_superuser or 'staff' in user.group.all|join:" " %}
 
-        ws.onmessage = e => {
-            const msg = JSON.parse(e.data);
-            toast.textContent = `New ${msg.table.replace('booking_','')} booking`;
-            toast.style.display = 'block';
-            audio.play();
-            setTimeout(() => toast.style.display = 'none', 4000);
-        };
-    </script>
+      <script>
+      console.log('New WebSocket line creating');
+
+      const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
+
+      ws.onopen = function() {
+          console.log('WebSocket connection opened');
+      };
+
+      ws.onmessage = function(e) {
+          const msg = JSON.parse(e.data);
+          console.log("new row:", msg.data);
+          new Audio("{% static 'upbeat.mp3' %}").play();
+      };
+
+      ws.onclose = function() {
+          console.log('WebSocket connection closed');
+      };
+
+      ws.onerror = function(error) {
+          console.log('WebSocket error: ', error);
+      };
+  </script>
+{% endif %}
 {% endblock %}
