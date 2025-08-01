@@ -1,7 +1,14 @@
 {% extends "admin/base.html" %}
 {% load static %}
+{% load auth_extras %}
 
-{% block extrahead %}
+{% comment %} 
+This template extends base.html and is used to customize the header and title of the admin site. 
+It is specifically designed to override the branding and title section of the admin interface.
+{% endcomment %}
+
+
+{% block footer %}
     {{ block.super }}
 
     <!-- 1.  Toast CSS (tiny, inline) -->
@@ -16,9 +23,112 @@
 
     <!-- 2.  WebSocket script -->
   
-{% if user.is_superuser or 'staff' in user.group.all|join:" " %}
+{% if user.is_superuser or user.is_staff %}
 
-      <script>
+  <script>
+    // === Notification System ===
+    let notificationCount = 0;
+    const countEl = document.getElementById('notification-count');
+    const iconEl = document.getElementById('notification-icon');
+    const popupEl = document.createElement('div');
+    popupEl.className = 'notification-popup';
+    document.body.appendChild(popupEl);
+
+    // WebSocket Connection
+    const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
+
+    ws.onopen = function() {
+      console.log('WebSocket connection opened');
+    };
+
+    ws.onmessage = function(e) {
+      const msg = JSON.parse(e.data);
+      console.log("New booking:", msg.data);
+
+      // Increment notification count
+      notificationCount++;
+      updateBadge();
+      
+      // Play sound
+      new Audio("{% static 'upbeat.mp3' %}").play();
+
+      // Optional: Add to popup
+      addNotificationToPopup(msg.data);
+    };
+
+    ws.onclose = function(e) {
+      console.log('WebSocket closed');
+    };
+
+    // === UI Functions ===
+    function updateBadge() {
+      if (notificationCount > 0) {
+        countEl.textContent = notificationCount;
+        countEl.style.display = 'flex';
+      } else {
+        countEl.style.display = 'none';
+      }
+    }
+
+    function addNotificationToPopup(data) {
+      const item = document.createElement('div');
+      item.className = 'notification-item';
+      item.textContent = `New booking: ${data.title || 'Unknown'}`;
+      popupEl.prepend(item); // Most recent first
+    }
+
+    // Toggle popup on click
+    iconEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (popupEl.style.display === 'block') {
+        popupEl.style.display = 'none';
+      } else {
+        popupEl.style.display = 'block';
+      }
+    });
+
+    // Close popup on outside click
+    document.addEventListener('click', () => {
+      popupEl.style.display = 'none';
+    });
+
+    popupEl.addEventListener('click', (e) => e.stopPropagation());
+
+    // Mark all as read on click
+    iconEl.addEventListener('click', () => {
+      if (notificationCount > 0) {
+        notificationCount = 0;
+        updateBadge();
+        document.title = document.title.replace(/\(🔔\) /, ''); // Remove flash
+      }
+    });
+
+    // Flash title on new notification
+    function flashTitle() {
+      const original = document.title;
+      let blink = true;
+      const timer = setInterval(() => {
+        document.title = blink ? '(🔔) ' + original : original;
+        blink = !blink;
+      }, 1000);
+      setTimeout(() => clearInterval(timer), 5000);
+    }
+
+    // Optional: Flash title on new notification
+    ws.onmessage = function(e) {
+      const msg = JSON.parse(e.data);
+      console.log("New booking:", msg.data);
+
+      notificationCount++;
+      updateBadge();
+      new Audio("{% static 'upbeat.mp3' %}").play();
+      addNotificationToPopup(msg.data);
+      flashTitle();  // Optional visual alert
+    };
+  </script>
+
+{% comment %} <script src="/js/websocket.js"></script> {% endcomment %}
+      {% comment %} <script>
       console.log('New WebSocket line creating');
 
       const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
@@ -40,6 +150,6 @@
       ws.onerror = function(error) {
           console.log('WebSocket error: ', error);
       };
-  </script>
+  </script> {% endcomment %}
 {% endif %}
 {% endblock %}
