@@ -14,7 +14,7 @@ services:
 
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11"
+        value: "3.11.11"
       - key: DJANGO_SETTINGS_MODULE
         value: projrestaurant.settings
       - key: DATABASE_URL
