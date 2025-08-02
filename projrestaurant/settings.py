@@ -12,11 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
-from str2bool import str2bool
+import dj_database_url
 
 
-load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,10 +28,10 @@ SECRET_KEY = 'django-insecure-fiz0qg@0=(r5!fd_+yk3se(si*fx(f05sa2ksnf459kfc27#ke
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 # Enable/Disable Debug mode
-DEBUG = str2bool(os.environ.get('DEBUG'))
+DEBUG = os.environ.get("DEBUG", "False").lower() != "false"
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
 
 
 # Application definition
@@ -54,9 +52,16 @@ INSTALLED_APPS = [
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": ["redis://127.0.0.1:6379/0"]},
+        "CONFIG": {"hosts": [os.environ["REDIS_URL", "redis://127.0.0.1:6379/0"]]},
     },
 }
+# Local Redis
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {"hosts": ["redis://127.0.0.1:6379/0"]},
+#     },
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -91,14 +96,14 @@ WSGI_APPLICATION = 'projrestaurant.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DB_ENGINE = os.getenv('DB_ENGINE', None)
-DB_USERNAME = os.getenv('DB_USERNAME', None)
-DB_PASS = os.getenv('DB_PASS', None)
-DB_HOST = os.getenv('DB_HOST', None)
-DB_PORT = os.getenv('DB_PORT', None)
-DB_NAME = os.getenv('DB_NAME', None)
+DB_ENGINE = os.environ.get('DB_ENGINE', None)
+DB_USERNAME = os.environ.get('DB_USERNAME', None)
+DB_PASS = os.environ.get('DB_PASS', None)
+DB_HOST = os.environ.get('DB_HOST', None)
+DB_PORT = os.environ.get('DB_PORT', None)
+DB_NAME = os.environ.get('DB_NAME', None)
 
-if DB_ENGINE and DB_NAME and DB_USERNAME:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.' + DB_ENGINE,
@@ -110,12 +115,8 @@ if DB_ENGINE and DB_NAME and DB_USERNAME:
         },
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+    DATABASES = {"default": dj_database_url.parse(os.environ["DATABASE_URL"])}
+
 
 # DATABASES = {
 #     'default': {
