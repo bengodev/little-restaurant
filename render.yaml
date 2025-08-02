@@ -11,7 +11,7 @@ services:
         python3 manage.py listen_notify
         wait
       "
-
+    autoDeployTrigger: commit
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.11"
