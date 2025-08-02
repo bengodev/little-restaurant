@@ -112,12 +112,12 @@ WSGI_APPLICATION = 'projrestaurant.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DB_ENGINE = os.environ.get('DB_ENGINE', None)
-DB_USERNAME = os.environ.get('DB_USERNAME', None)
-DB_PASS = os.environ.get('DB_PASS', None)
-DB_HOST = os.environ.get('DB_HOST', None)
-DB_PORT = os.environ.get('DB_PORT', None)
-DB_NAME = os.environ.get('DB_NAME', None)
+DB_ENGINE = os.getenv('DB_ENGINE', None)
+DB_USERNAME = os.getenv('DB_USERNAME', None)
+DB_PASS = os.getenv('DB_PASS', None)
+DB_HOST = os.getenv('DB_HOST', None)
+DB_PORT = os.getenv('DB_PORT', None)
+DB_NAME = os.getenv('DB_NAME', None)
 
 
 if DEBUG:
