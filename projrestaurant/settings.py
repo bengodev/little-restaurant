@@ -119,8 +119,7 @@ DB_HOST = os.environ.get('DB_HOST', None)
 DB_PORT = os.environ.get('DB_PORT', None)
 DB_NAME = os.environ.get('DB_NAME', None)
 
-print(f"DATABASE_URL: {os.getenv("DATABASE_URL")}")
-print(f"DEBUG: {os.getenv("DEBUG")}")
+
 if DEBUG:
     DATABASES = {
         'default': {
