@@ -5,30 +5,17 @@ services:
     runtime: python
     plan: free
     buildCommand: "./build.sh"
-    startCommand: "daphne projrestaurant.asgi:application --bind 0.0.0.0 --port $PORT"
+    # startCommand: "daphne projrestaurant.asgi:application --bind 0.0.0.0 --port $PORT"
+    startCommand: |
+      bash -c "
+        daphne projrestaurant.asgi:application --bind 0.0.0.0 --port $PORT &
+        python manage.py listen_notify
+        wait
+      "
+
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
-      - key: DJANGO_SETTINGS_MODULE
-        value: projrestaurant.settings
-      - key: DATABASE_URL
-        fromDatabase:
-          name: django_db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: django_redis
-          property: connectionString
-
-  # 2. Background worker (listener)
-  - type: worker
-    name: listener
-    runtime: python
-    plan: free
-    buildCommand: "./build.sh"
-    startCommand: "python3 manage.py listen_notify"
-    envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: projrestaurant.settings
       - key: DATABASE_URL
