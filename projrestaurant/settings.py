@@ -35,7 +35,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'  # Convert string to boolean
 
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
-                 '.onrender.com/']
+                 'django-restaurant-vijw.onrender.com']
 
 
 # Application definition
@@ -53,10 +53,13 @@ INSTALLED_APPS = [
     'shared'
 ]
 
+
+# print(f"REDIS_URL: {os.getenv('REDIS_URL')}")
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")]},
+        "CONFIG": {"hosts": ["redis://127.0.0.1:6379/0"]},
+        # "CONFIG": {"hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")]},
     },
 }
 
@@ -119,17 +122,20 @@ DB_HOST = os.getenv('DB_HOST', None)
 DB_PORT = os.getenv('DB_PORT', None)
 DB_NAME = os.getenv('DB_NAME', None)
 
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.' + DB_ENGINE,
+#         'NAME': DB_NAME,
+#         'USER': DB_USERNAME,
+#         'PASSWORD': DB_PASS,
+#         'HOST': DB_HOST,
+#         'PORT': DB_PORT,
+#     },
+# }
 if DEBUG:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.' + DB_ENGINE,
-            'NAME': DB_NAME,
-            'USER': DB_USERNAME,
-            'PASSWORD': DB_PASS,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-        },
+        "default": dj_database_url.parse(
+            os.getenv("DATABASE_URL"))
     }
 else:
     DATABASES = {
