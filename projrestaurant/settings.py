@@ -35,7 +35,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'  # Convert string to boolean
 
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
-                 'https://django-restaurant-vijw.onrender.com/']
+                 '.onrender.com/']
 
 
 # Application definition
@@ -62,8 +62,13 @@ CHANNEL_LAYERS = {
 
 
 # In production without CSRF_TRUSTED_ORIGINS settings it'll give error
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085',
-                        'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://django-restaurant-vijw.onrender.com/']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://localhost:5085',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:5085',
+    'https://django-restaurant-vijw.onrender.com/'
+]
 
 
 # Local Redis
@@ -114,6 +119,8 @@ DB_HOST = os.environ.get('DB_HOST', None)
 DB_PORT = os.environ.get('DB_PORT', None)
 DB_NAME = os.environ.get('DB_NAME', None)
 
+print(f"DATABASE_URL: {os.getenv("DATABASE_URL")}")
+print(f"DEBUG: {os.getenv("DEBUG")}")
 if DEBUG:
     DATABASES = {
         'default': {
