@@ -1,0 +1,54 @@
+services:
+  # 1. Web service
+  - type: web
+    name: django-restaurant
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "daphne projrestaurant.asgi:application --bind 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DJANGO_SETTINGS_MODULE
+        value: projrestaurant.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: django_db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: django_redis
+          property: connectionString
+
+  # 2. Background worker (listener)
+  - type: worker
+    name: listener
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "python3 manage.py listen_notify"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: projrestaurant.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: django_db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: django_redis
+          property: connectionString
+
+  # 3. Redis/Key Value instance
+  - type: keyvalue
+    name: django_redis # <- this must match type 'keyvalue' fromService name above
+    plan: free
+    ipAllowList: []          # internal only
+
+# 4. PostgreSQL database
+databases:
+  - name: django_db # <- this must match the fromDatabase name above
+    plan: free
+    databaseName: prodrestaurantdb # <- this is the name of the actual database - optional, use lowercase without underscore as some posgresql tools prefer it
