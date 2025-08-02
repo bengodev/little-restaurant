@@ -10,11 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 import dj_database_url
 
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,10 +30,12 @@ SECRET_KEY = 'django-insecure-fiz0qg@0=(r5!fd_+yk3se(si*fx(f05sa2ksnf459kfc27#ke
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 # Enable/Disable Debug mode
-DEBUG = os.environ.get("DEBUG", "False").lower() != "false"
+# DEBUG = os.environ.get("DEBUG", "False").lower() != "false"
+DEBUG = os.getenv('DEBUG', 'False') == 'True'  # Convert string to boolean
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 'https://django-restaurant-vijw.onrender.com/']
 
 
 # Application definition
@@ -52,9 +56,16 @@ INSTALLED_APPS = [
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [os.environ["REDIS_URL"]]},
+        "CONFIG": {"hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")]},
     },
 }
+
+
+# In production without CSRF_TRUSTED_ORIGINS settings it'll give error
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085',
+                        'http://127.0.0.1:8000', 'http://127.0.0.1:5085', 'https://django-restaurant-vijw.onrender.com/']
+
+
 # Local Redis
 # CHANNEL_LAYERS = {
 #     "default": {
@@ -103,6 +114,8 @@ DB_HOST = os.environ.get('DB_HOST', None)
 DB_PORT = os.environ.get('DB_PORT', None)
 DB_NAME = os.environ.get('DB_NAME', None)
 
+print(f"DATABASE_URL: {os.getenv("DATABASE_URL")}")
+print(f"DEBUG: {os.getenv("DEBUG")}")
 if DEBUG:
     DATABASES = {
         'default': {
@@ -115,7 +128,10 @@ if DEBUG:
         },
     }
 else:
-    DATABASES = {"default": dj_database_url.parse(os.environ["DATABASE_URL"])}
+    DATABASES = {
+        "default": dj_database_url.parse(
+            os.getenv("DATABASE_URL"))
+    }
 
 
 # DATABASES = {
