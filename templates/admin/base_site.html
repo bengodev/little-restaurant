@@ -35,7 +35,7 @@ It is specifically designed to override the branding and title section of the ad
     document.body.appendChild(popupEl);
 
     // WebSocket Connection
-    const ws = new WebSocket(`ws://${window.location.host}/ws/booking/`);
+    const ws = new WebSocket(`wss://${window.location.host}/ws/booking/`);
 
     ws.onopen = function() {
       console.log('WebSocket connection opened');
@@ -73,7 +73,7 @@ It is specifically designed to override the branding and title section of the ad
     function addNotificationToPopup(data) {
       const item = document.createElement('div');
       item.className = 'notification-item';
-      item.textContent = `New booking: ${data.title || 'Unknown'}`;
+      item.textContent = `New booking: ${data.name || 'Unknown'} at ${data.date || 'Unknown time'} for ${data.guests || 'Unknown people'} people`;
       popupEl.prepend(item); // Most recent first
     }
 
