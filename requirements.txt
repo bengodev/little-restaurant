@@ -10,6 +10,7 @@ cryptography==45.0.5
 daphne==4.2.1
 dj-database-url==3.0.1
 Django==5.2.4
+dotenv==0.9.9
 hyperlink==21.0.0
 idna==3.10
 incremental==24.7.2
@@ -22,6 +23,7 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.22
 pyOpenSSL==25.1.0
+python-dotenv==1.1.1
 redis==6.2.0
 service-identity==24.2.0
 setuptools==80.9.0
